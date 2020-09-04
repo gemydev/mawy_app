@@ -18,10 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     if (event is LoginEvent) {
       try {
         await registerRepository.registerRepositoryApi.login(event.user);
-        yield LoginState(
-            statusCode:
-                registerRepository.registerRepositoryApi.loginStatusCode,
-            token: registerRepository.registerRepositoryApi.loginToken);
+        yield LoginState();
       } catch (e) {
         yield ErrorState(message: "error founded");
       }

@@ -11,16 +11,14 @@ abstract class RegisterRepository {
 
 class RegisterRepositoryApi extends RegisterRepository {
   String urlServer = 'http://mawyApi.codecaique.com/api';
-  String loginToken ;
-  int loginStatusCode ;
+
 
 
   @override
   Future<void> login(User userObject) async {
     String url = '$urlServer/login';
     http.Response response = await http.post(url, body: userObject.toJson());
-    loginStatusCode = response.statusCode;
-    loginToken = json.decode(response.body);
+
   }
 
   Future<void> signUp(User userObject) async {

@@ -10,13 +10,9 @@ class RegisterInitial extends RegisterState {
 }
 
 class LoginState extends RegisterState {
-  final int statusCode ;
-  final String token;
-  
-  LoginState({this.statusCode , this.token});
 
   @override
-  List<Object> get props => [token];
+  List<Object> get props => [];
 }
 
 class SignUpState extends RegisterState {
