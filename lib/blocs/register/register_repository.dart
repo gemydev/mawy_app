@@ -12,8 +12,6 @@ abstract class RegisterRepository {
 class RegisterRepositoryApi extends RegisterRepository {
   String urlServer = 'http://mawyApi.codecaique.com/api';
 
-
-
   @override
   Future<void> login(User userObject) async {
     String url = '$urlServer/login';

@@ -19,11 +19,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: _buildBottomNavBar(),
-    ));
+    );
   }
 
   BottomNavigationBar _buildBottomNavBar() {
@@ -63,5 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentIndex = index;
     });
+
   }
 }

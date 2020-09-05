@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mawy_app/data/register_repository.dart';
+import 'package:mawy_app/blocs/register/register_repository.dart';
 import 'package:mawy_app/models/user.dart';
 
 part 'register_event.dart';

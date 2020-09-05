@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/blocs.dart';
+import 'package:mawy_app/blocs/register/register_repository.dart';
 import 'package:mawy_app/constants/colors.dart';
-import 'package:mawy_app/data/register_repository.dart';
-import 'package:mawy_app/functions/navigation_funs.dart';
 import 'package:mawy_app/models/user.dart';
 import 'package:mawy_app/screens/signup.dart';
 import 'package:mawy_app/screens/your_store.dart';
@@ -23,16 +22,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final registerBloc = BlocProvider.of<RegisterBloc>(context);
-
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: MAIN_COLOR,
-          title: Text(
-            "متجرك",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-        ),
         body: SingleChildScrollView(
           child: Column(
             textDirection: TextDirection.rtl,
@@ -101,7 +91,7 @@ class _LoginState extends State<Login> {
                                   userName: userName,
                                   passwords: password
                                 )));
-                                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => YourStoreScreen()));
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => YourStore()));
                                 print(password);
                               },
                               color: MAIN_COLOR,
