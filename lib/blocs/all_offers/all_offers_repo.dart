@@ -28,13 +28,11 @@ class RegisterRepositoryApi extends AllOffersRepository {
 
   @override
   Future<void> getOfferByCat() {
-    // TODO: implement getOfferByCat
     throw UnimplementedError();
   }
 
   @override
   Future<void> getOfferByCatAndCity() {
-    // TODO: implement getOfferByCatAndCity
     throw UnimplementedError();
   }
 
