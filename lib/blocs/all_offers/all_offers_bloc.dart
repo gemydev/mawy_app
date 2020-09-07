@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mawy_app/blocs/all_offers/all_offers_repo.dart';
@@ -16,10 +15,14 @@ class AllOffersBloc extends Bloc<AllOffersEvent, AllOffersState> {
   Stream<AllOffersState> mapEventToState(
     AllOffersEvent event,
   ) async* {
-    if(event is FetchAllOffers){
+    if (event is FetchAllOffers) {
+      yield OffersLoading();
+      try {
         final offers = await repository.getAllOffers();
         yield OffersLoaded(allOffers: offers);
-
+      } catch (e) {
+        yield ErrorInFetch(message: e.toString());
+      }
     }
   }
 }

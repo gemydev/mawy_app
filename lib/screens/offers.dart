@@ -29,7 +29,7 @@ class _OffersScreenState extends State<OffersScreen> {
               } else if (state is ErrorInFetch) {
                 return Text(state.message);
               }
-              return Center(child: Text("error"));
+              return Center(child: CircularProgressIndicator());
             }),
           )
         ],
