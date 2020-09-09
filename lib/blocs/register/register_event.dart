@@ -5,22 +5,26 @@ abstract class RegisterEvent extends Equatable {
 }
 
 class LoginEvent extends RegisterEvent {
-  final User user ;
+  final String userName, firebaseToken, password;
+  final bool done ;
 
-  LoginEvent({this.user});
+  LoginEvent({this.userName, this.firebaseToken, this.password, this.done});
 
   @override
-  List<Object> get props => [user];
-
+  List<Object> get props => [userName, password, firebaseToken ,done];
 }
 
 class SignUpEvent extends RegisterEvent {
-  final User user ;
+  final String userName, address, phone, password, firebaseToken;
 
-  SignUpEvent({this.user});
+
+  SignUpEvent(
+      {this.userName,
+      this.address,
+      this.phone,
+      this.password,
+      this.firebaseToken });
 
   @override
-  List<Object> get props => throw UnimplementedError();
-
+  List<Object> get props => [userName, address, password, phone, firebaseToken];
 }
-

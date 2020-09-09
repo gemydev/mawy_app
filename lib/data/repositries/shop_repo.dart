@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mawy_app/models/shop.dart';
-
+import 'package:mawy_app/data/models/shop.dart';
 
 abstract class ShopsRepository {
-  ShopsRepositoryApi shopsRepositoryApi = ShopsRepositoryApi();
   Future<List<ShopData>> getAllShops();
 }
 
@@ -19,15 +17,11 @@ class ShopsRepositoryApi extends ShopsRepository {
       int length = Shops.fromJson(responseAsJson).shopsData.length;
       List<ShopData> list = [];
       for (int i = 0; i < length; i++) {
-        list.add(Shops
-            .fromJson(responseAsJson)
-            .shopsData[i]);
+        list.add(Shops.fromJson(responseAsJson).shopsData[i]);
       }
       return list;
     } else {
       throw Exception('Can not load posts');
     }
   }
-
-
 }

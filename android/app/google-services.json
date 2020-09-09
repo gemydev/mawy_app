@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "341782830353",
+    "firebase_url": "https://mawy-e7279.firebaseio.com",
+    "project_id": "mawy-e7279",
+    "storage_bucket": "mawy-e7279.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341782830353:android:733465e44a347e6b0080b0",
+        "android_client_info": {
+          "package_name": "com.gemy.mawy_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341782830353-kb5ordsbjhtdbobok9b89t088h34ml8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAgYq5yMnQ8vQRASY3p2Nzzpw2FeqSd1o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341782830353-kb5ordsbjhtdbobok9b89t088h34ml8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

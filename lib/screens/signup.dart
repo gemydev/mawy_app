@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/register/register_bloc.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/functions/navigation_funs.dart';
-import 'package:mawy_app/models/user.dart';
 import 'package:mawy_app/screens/login.dart';
 import 'package:mawy_app/widgest/custom_text_field.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -13,14 +13,34 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  FirebaseMessaging fcm = FirebaseMessaging();
+  String firebaseToken;
   TextEditingController userNameController,
       passwordController,
       addressController,
       phoneController = TextEditingController();
-  String password  , userName , address , phone;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String password, userName, address, phone;
+  RegisterBloc registerBloc;
+  Future<void> getToken() async {
+    await fcm.getToken().then((value) => firebaseToken = value);
+  }
+
+  @override
+  void initState() {
+    registerBloc = BlocProvider.of<RegisterBloc>(context);
+    getToken();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    registerBloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final registerBloc = BlocProvider.of<RegisterBloc>(context);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Padding(
@@ -45,6 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               Form(
+                key: _formKey,
                 child: Column(
                   textDirection: TextDirection.rtl,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value){
+                      onChange: (value) {
                         setState(() {
                           userName = value;
                         });
@@ -73,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value){
+                      onChange: (value) {
                         setState(() {
                           address = value;
                         });
@@ -89,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value){
+                      onChange: (value) {
                         setState(() {
                           phone = value;
                         });
@@ -105,7 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value){
+                      onChange: (value) {
                         setState(() {
                           password = value;
                         });
@@ -117,19 +138,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: BlocBuilder<RegisterBloc, RegisterState>(
-                            cubit: BlocProvider.of<RegisterBloc>(context),
                               builder: (BuildContext context, state) {
                             return RaisedButton(
-                              onPressed: () {
-                                registerBloc.add(SignUpEvent(
-                                  user: User(
-                                    address: address,
-                                    phone: phone,
-                                    userName: userName,
-                                    passwords: password
-                                  )
-                                ));
-                              },
+                              onPressed: state is! AuthenticationLoading
+                                  ? _signUpOnPressed
+                                  : null,
                               color: MAIN_COLOR,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)),
@@ -182,5 +195,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  _signUpOnPressed() {
+    if (_formKey.currentState.validate()) {
+      registerBloc.add(SignUpEvent(
+          password: password,
+          userName: userName,
+          phone: phone,
+          address: address,
+          firebaseToken: firebaseToken));
+      // _formKey.currentState.reset();
+    }
   }
 }

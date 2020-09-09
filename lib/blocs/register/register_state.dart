@@ -9,7 +9,14 @@ class RegisterInitial extends RegisterState {
   List<Object> get props => [];
 }
 
+class AuthenticationLoading extends RegisterState {
+  @override
+  List<Object> get props => [];
+}
+
 class LoginState extends RegisterState {
+  final bool done ;
+  LoginState({this.done});
 
   @override
   List<Object> get props => [];

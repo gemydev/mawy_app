@@ -19,7 +19,7 @@ class OffersLoaded extends AllOffersState {
   OffersLoaded({this.allOffers});
 
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [allOffers];
 }
 
 class ErrorInFetch extends AllOffersState{

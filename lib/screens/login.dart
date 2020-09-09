@@ -1,9 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/blocs.dart';
-import 'package:mawy_app/blocs/register/register_repository.dart';
 import 'package:mawy_app/constants/colors.dart';
-import 'package:mawy_app/models/user.dart';
+import 'package:mawy_app/functions/navigation_funs.dart';
 import 'package:mawy_app/screens/signup.dart';
 import 'package:mawy_app/screens/your_store.dart';
 import 'package:mawy_app/widgest/custom_text_field.dart';
@@ -16,12 +16,26 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController userNameController,
       passwordController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String userName, password;
-  RegisterRepositoryApi registerRepositoryApi;
+  FirebaseMessaging fcm = FirebaseMessaging();
+  String firebaseToken ;
+  RegisterBloc registerBloc ;
+  Future<void> getToken() async {
+    await fcm.getToken().then((value) => firebaseToken = value);
+  }
+
+  @override
+  void initState() {
+    registerBloc = BlocProvider.of<RegisterBloc>(context);
+    getToken();
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    final registerBloc = BlocProvider.of<RegisterBloc>(context);
     return Scaffold(
         body: SingleChildScrollView(
           child: Column(
@@ -36,6 +50,7 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.only(
                     top: 10, left: 8, right: 8, bottom: 10),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     textDirection: TextDirection.rtl,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,14 +100,13 @@ class _LoginState extends State<Login> {
                             builder: (context, state) {
                           return Center(
                             child: RaisedButton(
-                              onPressed: () {
-                                registerBloc.add(LoginEvent(
-                                    user: User(
-                                  userName: userName,
-                                  passwords: password
-                                )));
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => YourStore()));
-                                print(password);
+                              onPressed:() {
+                                _loginOnPressed();
+                                if(state is LoginState){
+                                  if(state.done == true){
+                                    shiftByReplacement(context, YourStore());
+                                  }
+                                }
                               },
                               color: MAIN_COLOR,
                               shape: RoundedRectangleBorder(
@@ -111,27 +125,6 @@ class _LoginState extends State<Login> {
                           );
                         }),
                       ),
-                      /*
-                 RaisedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(context ,MaterialPageRoute(
-                          builder: (context)=> YourStoreScreen()
-                        ));
-                      },
-                      color: MAIN_COLOR,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      elevation: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 5, bottom: 5),
-                        child: Text(
-                          "تسجيل الدخول",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                 */
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Directionality(
@@ -170,5 +163,18 @@ class _LoginState extends State<Login> {
             ],
           ),
         ));
+  }
+  _loginOnPressed() {
+    if (_formKey.currentState.validate()) {
+      registerBloc.add(LoginEvent(
+          password: password,
+          userName: userName,
+          firebaseToken: firebaseToken));
+    }
+  }
+  @override
+  void dispose() {
+    registerBloc.close();
+    super.dispose();
   }
 }

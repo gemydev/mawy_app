@@ -3,14 +3,25 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/shops/shops_bloc.dart';
 import 'package:mawy_app/constants/colors.dart';
-import 'package:mawy_app/models/shop.dart';
+import 'package:mawy_app/data/models/models.dart';
 import 'package:mawy_app/widgest/search_container.dart';
+
+
 class StoresScreen extends StatefulWidget {
   @override
   _StoresScreenState createState() => _StoresScreenState();
 }
 
 class _StoresScreenState extends State<StoresScreen> {
+
+  ShopsBloc shopsBloc;
+  @override
+  void initState() {
+    shopsBloc = BlocProvider.of<ShopsBloc>(context);
+    shopsBloc.add(GetShops());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +36,7 @@ class _StoresScreenState extends State<StoresScreen> {
             Expanded(
               child: BlocBuilder<ShopsBloc , ShopsState>(builder: (context , state){
                 if (state is ShopsLoading) {
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 } else if (state is ShopsLoaded) {
                   return _listOfShops(shops: state.shops);
                 } else if (state is ErrorInFetchShops) {
@@ -64,7 +75,7 @@ Widget _listOfShops({List<ShopData> shops}){
                 Expanded(child: Container(color: Colors.white,)),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(shops[index].shopName, style: TextStyle(
+                  child: Text(shops[index].shopName ?? "", style: TextStyle(
                       color: Colors.white,
                       fontSize: 16
                   ),),

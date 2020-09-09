@@ -162,7 +162,7 @@ class _YourStoreState extends State<YourStore> {
                       InfoWidget(
                         returnedWidget: (context, deviceInfo) {
                           return GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               normalShift(context, AddYourOffer());
                             },
                             child: Container(

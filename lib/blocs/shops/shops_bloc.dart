@@ -1,16 +1,16 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mawy_app/blocs/shops/shop_repo.dart';
-import 'package:mawy_app/models/shop.dart';
+import 'package:mawy_app/data/models/models.dart';
+import 'package:mawy_app/data/repositries/repositries.dart';
+
 
 part 'shops_event.dart';
 part 'shops_state.dart';
 
 class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   ShopsRepository repository ;
-  ShopsBloc() : super(ShopsInitial());
+  ShopsBloc({this.repository}) : super(ShopsInitial());
 
   @override
   Stream<ShopsState> mapEventToState(

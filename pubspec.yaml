@@ -34,6 +34,9 @@ dependencies:
   flutter_bloc: ^6.0.4
   equatable: ^1.2.4
   firebase_messaging: ^7.0.0
+  animated_floatactionbuttons: ^0.1.0
+  share: ^0.6.5
+
 
 dev_dependencies:
   flutter_test:
