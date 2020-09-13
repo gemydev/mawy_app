@@ -26,8 +26,8 @@ class User {
 
 class UserData {
   int id;
-  Null firstName;
-  Null lastName;
+  String firstName;
+  String lastName;
   String userName;
   String shopName;
   String passwords;
@@ -38,7 +38,7 @@ class UserData {
   String firebaseToken;
   String createdAt;
   String updatedAt;
-  Null pakaId;
+  String pakaId;
 
   UserData(
       {this.id,

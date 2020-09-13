@@ -9,7 +9,6 @@ import 'package:mawy_app/data/repositries/repositries.dart';
 import 'package:mawy_app/preference_healper/src/preference_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:mawy_app/screens/home.dart';
-import 'package:mawy_app/screens/your_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/shared_preferences/usage_prefs_list.dart';
 

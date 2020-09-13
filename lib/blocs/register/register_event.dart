@@ -6,12 +6,11 @@ abstract class RegisterEvent extends Equatable {
 
 class LoginEvent extends RegisterEvent {
   final String userName, firebaseToken, password;
-  final bool done ;
 
-  LoginEvent({this.userName, this.firebaseToken, this.password, this.done});
+  LoginEvent({this.userName, this.firebaseToken, this.password});
 
   @override
-  List<Object> get props => [userName, password, firebaseToken ,done];
+  List<Object> get props => [userName, password, firebaseToken ];
 }
 
 class SignUpEvent extends RegisterEvent {

@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mawy_app/data/models/models.dart';
+import 'package:mawy_app/data/models/user.dart';
 import 'package:mawy_app/data/repositries/repositries.dart';
-
 part 'register_event.dart';
 part 'register_state.dart';
 
@@ -18,11 +17,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     if (event is LoginEvent) {
       yield AuthenticationLoading();
       try {
-        await repository.login(
+        UserData user = await repository.login(
             userName: event.userName,
             password: event.password,
             firebaseToken: event.firebaseToken);
-        yield LoginState(done: repository.loginDone , user: await repository.login());
+        print("under login in bloc ${user.id}");
+        yield LoginState(user: user);
       } catch (e) {
         yield ErrorState(message: "error founded");
       }

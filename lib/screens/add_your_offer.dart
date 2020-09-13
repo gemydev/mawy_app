@@ -69,7 +69,7 @@ class _AddYourOfferState extends State<AddYourOffer> {
                             ),
                           ),
                           CustomTextField(
-                            onChange: (value) {
+                            onSaved: (value) {
                               setState(() {
                                 offerName = value;
                               });

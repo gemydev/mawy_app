@@ -19,7 +19,3 @@ List<String> keysListOfPrefsUser = [
   NAME_KEY,
   PHONE_NUMBER_KEY
 ];
-
-List<String> keysListOfPrefsShop = [
-  SHOP_ID_KEY
-];

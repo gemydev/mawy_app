@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:mawy_app/data/models/models.dart';
 
@@ -10,7 +9,6 @@ abstract class RegisterRepository {
 
 class RegisterRepositoryApi implements RegisterRepository {
   String urlServer = 'http://mawyApi.codecaique.com/api';
-  bool loginDone ;
   @override
   Future<UserData> login({String userName, password, firebaseToken}) async {
     String url = '$urlServer/login';
@@ -20,15 +18,13 @@ class RegisterRepositoryApi implements RegisterRepository {
       "firebase_token": firebaseToken
     });
     if (response.statusCode != 200) {
-      loginDone = false;
       throw Exception("error");
     }else{
-      loginDone =true;
       var responseAsJson = json.decode(response.body);
-      UserData userData = User.fromJson(responseAsJson).userData;
+      UserData userData = UserData.fromJson(responseAsJson['user_data']);
+      print("Hello from login Function with id = ${userData.id}");
       return userData;
     }
-
   }
 
   Future<void> signUp(

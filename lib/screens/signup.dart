@@ -78,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value) {
+                      onSaved: (value) {
                         setState(() {
                           userName = value;
                         });
@@ -94,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value) {
+                      onSaved: (value) {
                         setState(() {
                           address = value;
                         });
@@ -110,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value) {
+                      onSaved: (value) {
                         setState(() {
                           phone = value;
                         });
@@ -126,7 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     CustomTextField(
-                      onChange: (value) {
+                      onSaved: (value) {
                         setState(() {
                           password = value;
                         });
@@ -205,7 +205,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           phone: phone,
           address: address,
           firebaseToken: firebaseToken));
-      // _formKey.currentState.reset();
+      normalShift(context, Login());
+      _formKey.currentState.reset();
     }
   }
 }

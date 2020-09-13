@@ -4,9 +4,13 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mawy_app/constants/constants.dart';
 import 'package:mawy_app/data/models/offers.dart';
+import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
 import 'package:mawy_app/functions/responsive_ui/info_widget.dart';
+import 'package:mawy_app/functions/work_with_api/make_rating.dart';
+import 'package:mawy_app/functions/work_with_api/suggestion.dart';
 import 'package:mawy_app/widgest/floating_action_for_offers.dart';
 import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OfferDetails extends StatefulWidget {
   final Offer offer;
@@ -55,11 +59,11 @@ class _OfferDetailsState extends State<OfferDetails> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : PDFViewer(document: _doc),
+          : PDFViewer(document: _doc , showNavigation: true,showPicker: false, ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: CustomFloatingButtonForOffers(
         onTapRating: () {
-          showRatingDialog(context);
+          showRatingDialog(context ,widget.offer.id);
         },
         onTapShare: () {
           Share.share("share offer from mawy");
@@ -69,7 +73,8 @@ class _OfferDetailsState extends State<OfferDetails> {
   }
 }
 
-showRatingDialog(BuildContext context) {
+showRatingDialog(BuildContext context , int offerId) {
+  int ratingNumber ;
   showDialog(
       context: context,
       builder: (context) => new Dialog(
@@ -100,7 +105,7 @@ showRatingDialog(BuildContext context) {
                           initialRating: 1,
                           minRating: 1,
                           direction: Axis.horizontal,
-                          allowHalfRating: true,
+                          allowHalfRating: false,
                           itemCount: 5,
                           itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
                           itemBuilder: (context, _) => Icon(
@@ -108,23 +113,34 @@ showRatingDialog(BuildContext context) {
                             color: Colors.amber,
                           ),
                           onRatingUpdate: (rating) {
-                            print(rating);
+                            ratingNumber = rating.toInt();
                           },
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5, bottom: 5, right: 10, left: 10),
-                            child: Text(
-                              "تقييم",
-                              style: TextStyle(
-                                  color: MAIN_COLOR,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await makeRating(
+                                userName: prefs.getString(USER_NAME_KEY),
+                              offerId: offerId,
+                              ratingNumber:ratingNumber
+                            );
+                            print("rating done");
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, bottom: 5, right: 10, left: 10),
+                              child: Text(
+                                "تقييم",
+                                style: TextStyle(
+                                    color: MAIN_COLOR,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         )
@@ -170,6 +186,7 @@ showRatingDialog(BuildContext context) {
 }
 
 showSuggestionDialog(BuildContext context) {
+  TextEditingController suggestionController = TextEditingController();
   showDialog(
       context: context,
       builder: (context) => new Dialog(
@@ -206,41 +223,51 @@ showSuggestionDialog(BuildContext context) {
                     ),
                     Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                      decoration: InputDecoration(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
                             hintText: "ادخل اقتراحك",
                             border: new OutlineInputBorder(
                                 borderSide: new BorderSide(color: MAIN_COLOR)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: MAIN_COLOR)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: MAIN_COLOR))
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: new BorderSide(color: MAIN_COLOR)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: new BorderSide(color: MAIN_COLOR))),
+                        controller: suggestionController,
+                        cursorColor: MAIN_COLOR,
+                        maxLines: 15,
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
                       ),
-                      cursorColor: MAIN_COLOR,
-                      maxLines: 15,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                    ),
-                        )),
+                    )),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: InfoWidget(
                         returnedWidget: (context, deviceInfo) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: MAIN_COLOR),
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            width: deviceInfo.localWidth,
-                            child: Center(
-                              child: Text(
-                                "ارسال",
-                                style: TextStyle(
-                                    color: MAIN_COLOR,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold),
+                          return GestureDetector(
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await makeSuggestion(
+                                  content: suggestionController.text.toString(),
+                                  shopId: prefs.getInt(ID_KEY));
+                              print("${prefs.getInt(ID_KEY).toString()}");
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: MAIN_COLOR),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              width: deviceInfo.localWidth,
+                              child: Center(
+                                child: Text(
+                                  "ارسال",
+                                  style: TextStyle(
+                                      color: MAIN_COLOR,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           );

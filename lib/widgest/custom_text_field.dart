@@ -8,9 +8,9 @@ import 'package:mawy_app/constants/colors.dart';
 class CustomTextField extends StatelessWidget {
   final String hintText ;
   final TextEditingController controller;
-  final Function onChange ;
+  final Function onSaved ;
 
-  CustomTextField({this.hintText, this.controller , this.onChange});
+  CustomTextField({this.hintText, this.controller , this.onSaved});
   var border = new OutlineInputBorder(
     borderRadius: new BorderRadius.circular(15.0),
     borderSide: new BorderSide(
@@ -23,7 +23,7 @@ class CustomTextField extends StatelessWidget {
       textDirection:  TextDirection.rtl,
       child: Center(
         child: TextFormField(
-          onChanged: onChange,
+          onSaved: onSaved,
           controller: controller,
           cursorColor: MAIN_COLOR,
           decoration: InputDecoration(

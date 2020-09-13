@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/blocs.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
-import 'package:mawy_app/data/shared_preferences/update_prefs.dart';
 import 'package:mawy_app/functions/navigation_funs.dart';
 import 'package:mawy_app/preference_healper/preference_helper.dart';
 import 'package:mawy_app/preference_healper/src/preference_bloc.dart';
 import 'package:mawy_app/screens/signup.dart';
 import 'package:mawy_app/screens/your_store.dart';
 import 'package:mawy_app/widgest/custom_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -74,7 +74,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   CustomTextField(
-                    onChange: (value) {
+                    onSaved: (value) {
                       setState(() {
                         userName = value;
                       });
@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   CustomTextField(
-                    onChange: (value) {
+                    onSaved: (value) {
                       setState(() {
                         password = value;
                       });
@@ -105,22 +105,33 @@ class _LoginState extends State<Login> {
                       return Center(
                         child: RaisedButton(
                           onPressed: () async {
-                            _loginOnPressed();
-                            if (state is LoginState) {
-                              if (state.done == true) {
-                                updateDataOfUser(
-                                    keys: keysListOfPrefsUser,
-                                    preferenceBloc: preferenceBloc,
-                                    firebaseToken: state.user.firebaseToken,
-                                    userName: state.user.userName,
-                                    id: state.user.id,
-                                    name: state.user.name,
-                                    shopName: state.user.shopName,
-                                    phoneNumber: state.user.phone,
-                                    firstName: state.user.firstName,
-                                    lastName: state.user.lastName);
-                                shiftByReplacement(context, YourStore());
+                            SharedPreferences shared = await SharedPreferences.getInstance();
+                            if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
+                              registerBloc.add(LoginEvent(
+                                  password: password,
+                                  userName: userName,
+                                  firebaseToken: firebaseToken));
+                              if(state is LoginState){
+                                await shared.setInt(ID_KEY, state.user.id);
+                                await shared.setString(PHONE_NUMBER_KEY, state.user.phone);
+                                await shared.setString(USER_NAME_KEY, state.user.userName);
+                                await shared.setString(FIREBASE_TOKEN_KEY, firebaseToken);
+                                await shared.setString(NAME_KEY, state.user.name);
+                                await shared.setString(FIRST_NAME_KEY, state.user.firstName);
+                                await shared.setString(LAST_NAME_KEY, state.user.lastName);
+                                await shared.setString(SHOP_NAME_KEY, state.user.shopName);
+                              shiftByReplacement(context, YourStore());
+                                _formKey.currentState.reset();
                               }
+
+                              if(state is AuthenticationLoading){
+                                print("AuthenticationLoading");
+                              }
+                              if(state is ErrorState){
+                                print(state.message);
+                              }
+
                             }
                           },
                           color: MAIN_COLOR,
@@ -179,14 +190,7 @@ class _LoginState extends State<Login> {
     ));
   }
 
-  _loginOnPressed() {
-    if (_formKey.currentState.validate()) {
-      registerBloc.add(LoginEvent(
-          password: password,
-          userName: userName,
-          firebaseToken: firebaseToken));
-    }
-  }
+
 
   @override
   void dispose() {
@@ -195,3 +199,18 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 }
+
+/*
+updateDataOfUser(
+                                  keys: keysListOfPrefsUser,
+                                  preferenceBloc: preferenceBloc,
+                                  firebaseToken: state.user.firebaseToken,
+                                  userName: state.user.userName,
+                                  id: state.user.id,
+                                  name: state.user.name,
+                                  shopName: state.user.shopName,
+                                  phoneNumber: state.user.phone,
+                                  firstName: state.user.firstName,
+                                  lastName: state.user.lastName,
+                                );
+ */

@@ -33,7 +33,7 @@ class Offer {
   String file;
   String shopName;
   String cityName;
-  Null type;
+  String type;
   String state;
   String createdAt;
   String updatedAt;
