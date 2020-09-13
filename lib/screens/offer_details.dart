@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mawy_app/constants/constants.dart';
 import 'package:mawy_app/data/models/offers.dart';
 import 'package:mawy_app/functions/responsive_ui/info_widget.dart';
 import 'package:mawy_app/widgest/floating_action_for_offers.dart';
+import 'package:share/share.dart';
 
 class OfferDetails extends StatefulWidget {
   final Offer offer;
@@ -14,6 +18,26 @@ class OfferDetails extends StatefulWidget {
 }
 
 class _OfferDetailsState extends State<OfferDetails> {
+  PDFDocument _doc;
+  bool loading;
+  @override
+  void initState() {
+    initPDF();
+    super.initState();
+  }
+
+  initPDF() async {
+    setState(() {
+      loading = true;
+    });
+    final doc = await PDFDocument.fromURL(
+        'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
+    setState(() {
+      _doc = doc;
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,18 +51,25 @@ class _OfferDetailsState extends State<OfferDetails> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
       ),
+      body: loading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : PDFViewer(document: _doc),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: CustomFloatingButtonForOffers(
         onTapRating: () {
-          showMaterialDialog(context);
+          showRatingDialog(context);
         },
-        onTapShare: () {},
+        onTapShare: () {
+          Share.share("share offer from mawy");
+        },
       ),
     );
   }
 }
 
-showMaterialDialog(BuildContext context) {
+showRatingDialog(BuildContext context) {
   showDialog(
       context: context,
       builder: (context) => new Dialog(
@@ -65,9 +96,20 @@ showMaterialDialog(BuildContext context) {
                               fontSize: 25,
                               color: Colors.white),
                         ),
-                        Container(
-                          color: Colors.white60,
-                          child: Text("Stars"),
+                        RatingBar(
+                          initialRating: 1,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (rating) {
+                            print(rating);
+                          },
                         ),
                         Container(
                           decoration: BoxDecoration(
@@ -94,15 +136,107 @@ showMaterialDialog(BuildContext context) {
                       padding: const EdgeInsets.all(4.0),
                       child: InfoWidget(
                         returnedWidget: (context, deviceInfo) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                              showSuggestionDialog(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              width: deviceInfo.localWidth,
+                              child: Center(
+                                child: Text(
+                                  "اقترح عرض",
+                                  style: TextStyle(
+                                      color: MAIN_COLOR,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }),
+            backgroundColor: MAIN_COLOR,
+          ));
+}
+
+showSuggestionDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (context) => new Dialog(
+            insetPadding:
+                EdgeInsets.only(top: 0, bottom: 0, right: 30, left: 30),
+            elevation: 2,
+            child: StatefulBuilder(builder: (context, setState) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.55,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: InfoWidget(
+                        returnedWidget: (context, deviceInfo) {
                           return Container(
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: MAIN_COLOR,
+                            ),
+                            width: deviceInfo.localWidth,
+                            child: Center(
+                              child: Text(
+                                "ما هو اقتراحك ؟",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                      decoration: InputDecoration(
+                            hintText: "ادخل اقتراحك",
+                            border: new OutlineInputBorder(
+                                borderSide: new BorderSide(color: MAIN_COLOR)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: new BorderSide(color: MAIN_COLOR)),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: new BorderSide(color: MAIN_COLOR))
+                      ),
+                      cursorColor: MAIN_COLOR,
+                      maxLines: 15,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
+                    ),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: InfoWidget(
+                        returnedWidget: (context, deviceInfo) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: MAIN_COLOR),
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
                             ),
                             width: deviceInfo.localWidth,
                             child: Center(
                               child: Text(
-                                "اقترح عرض",
+                                "ارسال",
                                 style: TextStyle(
                                     color: MAIN_COLOR,
                                     fontSize: 25,
@@ -117,6 +251,6 @@ showMaterialDialog(BuildContext context) {
                 ),
               );
             }),
-            backgroundColor: MAIN_COLOR,
+            backgroundColor: Colors.white,
           ));
 }

@@ -6,9 +6,8 @@ import 'package:mawy_app/data/models/offers.dart';
 abstract class AllOffersRepository {
   Future<List<Offer>> getAllOffers();
   Future<void> getOfferByOfferId({String offerId});
-  Future<void> makeOffer(
-      {String shopId, name, cityId, categoryId, bunchId, copon});
-  Future<List<Offer>> getMyOffers({int shopId});
+  Future<void> makeOffer({String shopId, name, cityId, categoryId, bunchId, copon});
+  Future<List<Offer>> getMyOffersByShopId({int shopId});
   Future<List<Offer>> getMyWaitOffers({int shopId});
   Future<List<Offer>> getMyRefusedOffers({int shopId});
   Future<List<Offer>> getAllMyOffers({int shopId});
@@ -50,18 +49,16 @@ class AllOfferRepositoryApi implements AllOffersRepository {
   }
 
   @override
-  Future<void> getOfferByName(String name) async{
+  Future<void> getOfferByName(String name) async {
     final http.Response response =
-    await http.post('$urlServer/search_offerByname' , body: {
-      "name" : name
-    });
+        await http.post('$urlServer/search_offerByname', body: {"name": name});
     if (response.statusCode != 200) {
       throw Exception('Can not load posts');
     }
   }
 
   @override
-  Future<List<Offer>> getMyOffers({int shopId}) async {
+  Future<List<Offer>> getMyOffersByShopId({int shopId}) async {
     final http.Response response =
         await http.get('$urlServer/show_myoffers?shop_id=$shopId');
     if (response.statusCode == 200) {
@@ -145,7 +142,4 @@ class AllOfferRepositoryApi implements AllOffersRepository {
       throw Exception("error");
     }
   }
-
-
-
 }

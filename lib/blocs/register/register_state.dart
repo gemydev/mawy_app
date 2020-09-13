@@ -16,7 +16,8 @@ class AuthenticationLoading extends RegisterState {
 
 class LoginState extends RegisterState {
   final bool done ;
-  LoginState({this.done});
+  final UserData user;
+  LoginState({this.done ,this.user });
 
   @override
   List<Object> get props => [];

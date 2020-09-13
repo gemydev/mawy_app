@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mawy_app/constants/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -88,16 +89,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: MAIN_COLOR,
-                          borderRadius: BorderRadius.circular(15)),
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.28,
-                      child: Icon(
-                        Icons.assessment,
-                        size: 100,
-                        color: Color(0xff004f00),
+                    GestureDetector(
+                      onTap: _launchURLOfRatingApp,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: MAIN_COLOR,
+                            borderRadius: BorderRadius.circular(15)),
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.28,
+                        child: Icon(
+                          Icons.assessment,
+                          size: 100,
+                          color: Color(0xff004f00),
+                        ),
                       ),
                     ),
                     Text(
@@ -108,16 +112,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: MAIN_COLOR,
-                          borderRadius: BorderRadius.circular(15)),
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.28,
-                      child: Icon(
-                        Icons.security,
-                        size: 100,
-                        color: Color(0xff004f00),
+                    GestureDetector(
+                      onTap: _launchURLOfPrivacy,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: MAIN_COLOR,
+                            borderRadius: BorderRadius.circular(15)),
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.28,
+                        child: Icon(
+                          Icons.security,
+                          size: 100,
+                          color: Color(0xff004f00),
+                        ),
                       ),
                     ),
                     Text(
@@ -132,5 +139,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+  _launchURLOfPrivacy() async {
+    const url = 'http://mobappsbaker.com/privacy.html';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _launchURLOfRatingApp() async {
+    const url = 'https://play.google.com/store/apps/details?id=com.codecaique.mawy_cut';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

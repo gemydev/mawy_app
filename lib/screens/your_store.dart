@@ -155,10 +155,9 @@ class _YourStoreState extends State<YourStore> {
                       ),
                       Expanded(
                           child: Container(
-                        child: offerPackageSelected
-                            ? offersPackages()
-                            : interimOffer(),
-                      )),
+                              child: Packages(
+                        offerPackageSelected: offerPackageSelected,
+                      ))),
                       InfoWidget(
                         returnedWidget: (context, deviceInfo) {
                           return GestureDetector(

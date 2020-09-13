@@ -36,7 +36,9 @@ dependencies:
   firebase_messaging: ^7.0.0
   animated_floatactionbuttons: ^0.1.0
   share: ^0.6.5
-
+  shared_preferences: ^0.5.10
+  flutter_plugin_pdf_viewer: ^1.0.7
+  flutter_rating_bar: ^3.0.1+1
 
 dev_dependencies:
   flutter_test:

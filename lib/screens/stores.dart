@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mawy_app/blocs/shops/shops_bloc.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/data/models/models.dart';
+import 'package:mawy_app/functions/navigation_funs.dart';
+import 'package:mawy_app/screens/shop_details.dart';
 import 'package:mawy_app/widgest/search_container.dart';
 
 
@@ -64,23 +66,28 @@ Widget _listOfShops({List<ShopData> shops}){
       itemBuilder: (context , index){
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: MediaQuery.of(context).size.height*0.1,
-            decoration: BoxDecoration(
-                color: MAIN_COLOR,
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: Column(
-              children: [
-                Expanded(child: Container(color: Colors.white,)),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(shops[index].shopName ?? "", style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16
-                  ),),
-                ),
-              ],
+          child: GestureDetector(
+            onTap: (){
+              normalShift(context, ShopDetails(shop: shops[index],));
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.1,
+              decoration: BoxDecoration(
+                  color: MAIN_COLOR,
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              child: Column(
+                children: [
+                  Expanded(child: Container(color: Colors.white,)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(shops[index].shopName ?? "", style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16
+                    ),),
+                  ),
+                ],
+              ),
             ),
           ),
         );
