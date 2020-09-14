@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mawy_app/blocs/all_offers/all_offers_bloc.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/constants/constants.dart';
+import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
 import 'package:mawy_app/functions/navigation_funs.dart';
 import 'package:mawy_app/functions/responsive_ui/info_widget.dart';
+import 'package:mawy_app/widgest/list_of_offers.dart';
 import 'package:mawy_app/widgest/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 import 'add_your_offer.dart';
 
 enum HeaderTaps { one, two, three }
@@ -15,7 +21,9 @@ class YourStore extends StatefulWidget {
 
 class _YourStoreState extends State<YourStore> {
   bool offerPackageSelected;
+  int shopId;
   HeaderTaps selectedTapInHeader;
+  AllOffersBloc allOffersBloc;
 
   TextStyle selectedTapInHeaderStyle =
       TextStyle(color: MAIN_COLOR, fontSize: 18, fontWeight: FontWeight.bold);
@@ -26,7 +34,23 @@ class _YourStoreState extends State<YourStore> {
   void initState() {
     offerPackageSelected = true;
     selectedTapInHeader = HeaderTaps.one;
+    allOffersBloc = BlocProvider.of<AllOffersBloc>(context);
+    _function();
+    allOffersBloc.add(FetchMyAllOffers(shopId: shopId));
     super.initState();
+  }
+
+  _function() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      shopId = sharedPreferences.getInt(ID_KEY);
+    });
+  }
+
+  @override
+  void dispose() {
+    allOffersBloc.close();
+    super.dispose();
   }
 
   @override
@@ -57,6 +81,52 @@ class _YourStoreState extends State<YourStore> {
             ),
           ),
           headerOfOffers(),
+          Expanded(child: Container(
+            child: selectedTapInHeader == HeaderTaps.one
+                ? BlocBuilder<AllOffersBloc, AllOffersState>(
+              builder: (context, state) {
+                if (state is OffersLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is MyAllOffersLoaded) {
+                  return Container(
+                    child: listOfOffers(offers: state.myOffers),
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            )
+                : selectedTapInHeader == HeaderTaps.two
+                ? BlocBuilder<AllOffersBloc, AllOffersState>(
+              builder: (context, state) {
+                if (state is OffersLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is MyWaitOffersLoaded) {
+                  return Container(
+                    child: listOfOffers(offers: state.myWaitOffers),
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            )
+                : BlocBuilder<AllOffersBloc, AllOffersState>(
+              builder: (context, state) {
+                if (state is OffersLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is MyRefusedOffersLoaded) {
+                  return Container(
+                    child: listOfOffers(offers: state.myRefusedOffers),
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -162,7 +232,25 @@ class _YourStoreState extends State<YourStore> {
                         returnedWidget: (context, deviceInfo) {
                           return GestureDetector(
                             onTap: () {
-                              normalShift(context, AddYourOffer());
+                              if (Packages().offerPackageSelectedMust ==
+                                      false &&
+                                  Packages().interimPackageSelectedMust ==
+                                      false) {
+                                Toast.show(
+                                  "اختر باقة أولا",
+                                  context,
+                                  duration: Toast.LENGTH_SHORT,
+                                  gravity: Toast.BOTTOM,
+                                );
+                              } else {
+                                normalShift(
+                                    context,
+                                    AddYourOffer(
+                                      copon: offerPackageSelected
+                                          ? Packages().coponOfOffer
+                                          : Packages().coponOfInterim,
+                                    ));
+                              }
                             },
                             child: Container(
                               width: deviceInfo.localWidth,
@@ -204,6 +292,7 @@ class _YourStoreState extends State<YourStore> {
             onTap: () {
               setState(() {
                 selectedTapInHeader = HeaderTaps.one;
+                //allOffersBloc.add(FetchMyAllOffers(shopId: shopId));
               });
             },
             child: Container(

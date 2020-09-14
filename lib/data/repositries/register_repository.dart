@@ -9,6 +9,8 @@ abstract class RegisterRepository {
 
 class RegisterRepositoryApi implements RegisterRepository {
   String urlServer = 'http://mawyApi.codecaique.com/api';
+  bool loginDone ;
+  bool signUpDone;
   @override
   Future<UserData> login({String userName, password, firebaseToken}) async {
     String url = '$urlServer/login';
@@ -18,8 +20,10 @@ class RegisterRepositoryApi implements RegisterRepository {
       "firebase_token": firebaseToken
     });
     if (response.statusCode != 200) {
+      loginDone = false;
       throw Exception("error");
     }else{
+      loginDone = true;
       var responseAsJson = json.decode(response.body);
       UserData userData = UserData.fromJson(responseAsJson['user_data']);
       print("Hello from login Function with id = ${userData.id}");

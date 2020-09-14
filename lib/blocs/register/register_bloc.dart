@@ -22,7 +22,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             password: event.password,
             firebaseToken: event.firebaseToken);
         print("under login in bloc ${user.id}");
-        yield LoginState(user: user);
+        yield LoginState(user: user , loginDone: repository.loginDone);
       } catch (e) {
         yield ErrorState(message: "error founded");
       }

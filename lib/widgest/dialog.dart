@@ -3,7 +3,10 @@ import 'package:mawy_app/constants/colors.dart';
 
 class Packages extends StatefulWidget {
   final bool offerPackageSelected;
-
+  String coponOfOffer;
+  String coponOfInterim;
+  bool offerPackageSelectedMust;
+  bool interimPackageSelectedMust;
   Packages({this.offerPackageSelected});
 
   @override
@@ -13,11 +16,17 @@ class Packages extends StatefulWidget {
 class _PackagesState extends State<Packages> {
   bool weekPackageSelectedInOffer;
   bool weekPackageSelectedInInterim;
+  bool initFormOfOffer;
+  bool initFormOfInterim;
 
   @override
   void initState() {
     weekPackageSelectedInOffer = false;
     weekPackageSelectedInInterim = false;
+    initFormOfOffer = true;
+    initFormOfInterim = true;
+    widget.interimPackageSelectedMust = false;
+    widget.offerPackageSelectedMust = false;
     super.initState();
   }
 
@@ -35,12 +44,14 @@ class _PackagesState extends State<Packages> {
             onTap: () {
               setState(() {
                 weekPackageSelectedInOffer = false;
+                initFormOfOffer = false;
+                widget.offerPackageSelectedMust = true;
               });
             },
             child: Container(
-              color: weekPackageSelectedInOffer == false
+              color: initFormOfOffer
                   ? Colors.white
-                  : MAIN_COLOR,
+                  : weekPackageSelectedInOffer ? Colors.white : MAIN_COLOR,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -51,17 +62,21 @@ class _PackagesState extends State<Packages> {
                       "باقة شهرية",
                       style: TextStyle(
                           fontSize: 18,
-                          color: weekPackageSelectedInOffer == false
+                          color: initFormOfOffer
                               ? MAIN_COLOR
-                              : Colors.white),
+                              : weekPackageSelectedInOffer
+                                  ? MAIN_COLOR
+                                  : Colors.white),
                     ),
                     Text("1000 ريال",
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                             fontSize: 18,
-                            color: weekPackageSelectedInOffer == false
+                            color: initFormOfOffer
                                 ? MAIN_COLOR
-                                : Colors.white))
+                                : weekPackageSelectedInOffer
+                                    ? MAIN_COLOR
+                                    : Colors.white))
                   ],
                 ),
               ),
@@ -74,10 +89,14 @@ class _PackagesState extends State<Packages> {
             onTap: () {
               setState(() {
                 weekPackageSelectedInOffer = true;
+                initFormOfOffer = false;
+                widget.offerPackageSelectedMust = true;
               });
             },
             child: Container(
-              color: weekPackageSelectedInOffer ? Colors.white : MAIN_COLOR,
+              color: initFormOfOffer
+                  ? Colors.white
+                  : weekPackageSelectedInOffer ? MAIN_COLOR : Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -87,18 +106,23 @@ class _PackagesState extends State<Packages> {
                     Text(
                       "باقة اسبوعية",
                       style: TextStyle(
-                          fontSize: 18,
-                          color: weekPackageSelectedInOffer
-                              ? MAIN_COLOR
-                              : Colors.white),
+                        fontSize: 18,
+                        color: initFormOfOffer
+                            ? MAIN_COLOR
+                            : weekPackageSelectedInOffer
+                                ? Colors.white
+                                : MAIN_COLOR,
+                      ),
                     ),
                     Text("250 ريال",
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                             fontSize: 18,
-                            color: weekPackageSelectedInOffer
+                            color: initFormOfOffer
                                 ? MAIN_COLOR
-                                : Colors.white))
+                                : weekPackageSelectedInOffer
+                                    ? Colors.white
+                                    : MAIN_COLOR))
                   ],
                 ),
               ),
@@ -124,6 +148,11 @@ class _PackagesState extends State<Packages> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          widget.coponOfOffer = value;
+                        });
+                      },
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Add Coupon Code"),
@@ -147,12 +176,14 @@ class _PackagesState extends State<Packages> {
             onTap: () {
               setState(() {
                 weekPackageSelectedInInterim = false;
+                initFormOfInterim = false;
+                widget.interimPackageSelectedMust = true;
               });
             },
             child: Container(
-              color: weekPackageSelectedInInterim == false
+              color: initFormOfInterim
                   ? Colors.white
-                  : MAIN_COLOR,
+                  : weekPackageSelectedInInterim ? Colors.white : MAIN_COLOR,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -163,17 +194,21 @@ class _PackagesState extends State<Packages> {
                       "باقة شهرية",
                       style: TextStyle(
                           fontSize: 18,
-                          color: weekPackageSelectedInInterim == false
+                          color: initFormOfInterim
                               ? MAIN_COLOR
-                              : Colors.white),
+                              : weekPackageSelectedInInterim
+                                  ? MAIN_COLOR
+                                  : Colors.white),
                     ),
                     Text("300 ريال",
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                             fontSize: 18,
-                            color: weekPackageSelectedInInterim == false
+                            color: initFormOfInterim
                                 ? MAIN_COLOR
-                                : Colors.white))
+                                : weekPackageSelectedInInterim
+                                    ? MAIN_COLOR
+                                    : Colors.white))
                   ],
                 ),
               ),
@@ -186,12 +221,14 @@ class _PackagesState extends State<Packages> {
             onTap: () {
               setState(() {
                 weekPackageSelectedInInterim = true;
+                initFormOfInterim = false;
+                widget.interimPackageSelectedMust = true;
               });
             },
             child: Container(
-              color: weekPackageSelectedInInterim
+              color: initFormOfInterim
                   ? Colors.white
-                  : MAIN_COLOR,
+                  : weekPackageSelectedInInterim ? MAIN_COLOR : Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -202,17 +239,21 @@ class _PackagesState extends State<Packages> {
                       "باقة اسبوعية",
                       style: TextStyle(
                           fontSize: 18,
-                          color: weekPackageSelectedInInterim
+                          color: initFormOfInterim
                               ? MAIN_COLOR
-                              : Colors.white),
+                              : weekPackageSelectedInInterim
+                                  ? Colors.white
+                                  : MAIN_COLOR),
                     ),
                     Text("75 ريال",
                         textDirection: TextDirection.rtl,
                         style: TextStyle(
                             fontSize: 18,
-                            color: weekPackageSelectedInInterim
+                            color: initFormOfInterim
                                 ? MAIN_COLOR
-                                : Colors.white))
+                                : weekPackageSelectedInInterim
+                                    ? Colors.white
+                                    : MAIN_COLOR))
                   ],
                 ),
               ),
@@ -238,6 +279,11 @@ class _PackagesState extends State<Packages> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          widget.coponOfInterim = value;
+                        });
+                      },
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Add Coupon Code"),

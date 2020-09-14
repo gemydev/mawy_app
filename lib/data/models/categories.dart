@@ -1,5 +1,5 @@
 class Categories {
-  List<Category> allCategory;
+  List<FullCategory> allCategory;
   int error;
   String message;
 
@@ -7,9 +7,9 @@ class Categories {
 
   Categories.fromJson(Map<String, dynamic> json) {
     if (json['all_category'] != null) {
-      allCategory = new List<Category>();
+      allCategory = new List<FullCategory>();
       json['all_category'].forEach((v) {
-        allCategory.add(new Category.fromJson(v));
+        allCategory.add(new FullCategory.fromJson(v));
       });
     }
     error = json['error'];
@@ -27,16 +27,16 @@ class Categories {
   }
 }
 
-class Category {
+class FullCategory {
   int id;
   String name;
   String image;
   String createdAt;
   String updatedAt;
 
-  Category({this.id, this.name, this.image, this.createdAt, this.updatedAt});
+  FullCategory({this.id, this.name, this.image, this.createdAt, this.updatedAt});
 
-  Category.fromJson(Map<String, dynamic> json) {
+  FullCategory.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     image = json['image'];

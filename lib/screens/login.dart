@@ -105,33 +105,44 @@ class _LoginState extends State<Login> {
                       return Center(
                         child: RaisedButton(
                           onPressed: () async {
-                            SharedPreferences shared = await SharedPreferences.getInstance();
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
+                              SharedPreferences shared =
+                              await SharedPreferences.getInstance();
                               registerBloc.add(LoginEvent(
                                   password: password,
                                   userName: userName,
                                   firebaseToken: firebaseToken));
-                              if(state is LoginState){
+                              if (state is LoginState) {
+                                if(state.loginDone){
+                                  shiftByReplacement(context, YourStore());
+                                  _formKey.currentState.reset();
+                                }
                                 await shared.setInt(ID_KEY, state.user.id);
-                                await shared.setString(PHONE_NUMBER_KEY, state.user.phone);
-                                await shared.setString(USER_NAME_KEY, state.user.userName);
-                                await shared.setString(FIREBASE_TOKEN_KEY, firebaseToken);
-                                await shared.setString(NAME_KEY, state.user.name);
-                                await shared.setString(FIRST_NAME_KEY, state.user.firstName);
-                                await shared.setString(LAST_NAME_KEY, state.user.lastName);
-                                await shared.setString(SHOP_NAME_KEY, state.user.shopName);
-                              shiftByReplacement(context, YourStore());
-                                _formKey.currentState.reset();
+                                await shared.setString(
+                                    PHONE_NUMBER_KEY, state.user.phone);
+                                await shared.setString(
+                                    USER_NAME_KEY, state.user.userName);
+                                await shared.setString(
+                                    FIREBASE_TOKEN_KEY, state.user.firebaseToken);
+                                await shared.setString(
+                                    NAME_KEY, state.user.name);
+                                await shared.setString(
+                                    FIRST_NAME_KEY, state.user.firstName);
+                                await shared.setString(
+                                    LAST_NAME_KEY, state.user.lastName);
+                                await shared.setString(
+                                    SHOP_NAME_KEY, state.user.shopName);
+                                await shared.setBool(
+                                    KEEP_USER_LOGGED_IN_KEY, true);
+                                print(state.loginDone.toString());
                               }
-
-                              if(state is AuthenticationLoading){
+                              if (state is AuthenticationLoading) {
                                 print("AuthenticationLoading");
                               }
-                              if(state is ErrorState){
+                              if (state is ErrorState) {
                                 print(state.message);
                               }
-
                             }
                           },
                           color: MAIN_COLOR,
@@ -189,8 +200,6 @@ class _LoginState extends State<Login> {
       ),
     ));
   }
-
-
 
   @override
   void dispose() {

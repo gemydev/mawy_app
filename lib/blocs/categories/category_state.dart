@@ -15,7 +15,7 @@ class CategoriesLoading extends CategoryState {
 }
 
 class CategoriesLoaded extends CategoryState {
-  final List<Category> categories;
+  final List<FullCategory> categories;
 
   CategoriesLoaded({this.categories});
 

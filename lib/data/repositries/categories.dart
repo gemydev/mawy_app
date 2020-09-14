@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mawy_app/data/models/models.dart';
 
 abstract class CategoriesRepository {
-  Future<List<Category>> getAllCategories();
+  Future<List<FullCategory>> getAllCategories();
 }
 
 class CategoriesRepositoryApi implements CategoriesRepository {
@@ -12,11 +12,11 @@ class CategoriesRepositoryApi implements CategoriesRepository {
 
 
   @override
-  Future<List<Category>> getAllCategories() async{
+  Future<List<FullCategory>> getAllCategories() async{
     final http.Response response = await http.get('$urlServer/show_allCategory');
     if (response.statusCode == 200) {
       var responseAsJson = json.decode(response.body);
-      List<Category> list = Categories.fromJson(responseAsJson).allCategory;
+      List<FullCategory> list = Categories.fromJson(responseAsJson).allCategory;
       return list;
     } else {
       throw Exception('Can not load posts');
