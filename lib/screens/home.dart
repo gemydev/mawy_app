@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mawy_app/constants/colors.dart';
+import 'package:mawy_app/screens/bridge.dart';
 import 'package:mawy_app/screens/login.dart';
 import 'package:mawy_app/screens/screens.dart';
 
@@ -13,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _children = [
     OffersScreen(),
     StoresScreen(),
-    Login(),
+    BridgeScreen(),
     SettingsScreen()
   ];
 

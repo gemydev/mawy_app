@@ -41,164 +41,167 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomPadding: false,
         body: SingleChildScrollView(
-      child: Column(
-        textDirection: TextDirection.rtl,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: SECOND_COLOR,
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 10),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                textDirection: TextDirection.rtl,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Center(
-                    child: Text(
-                      "تسجيل الدخول",
-                      style: TextStyle(fontSize: 25, color: MAIN_COLOR),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(
-                      "اسم المستخدم",
-                      style: TextStyle(color: MAIN_COLOR, fontSize: 22),
-                    ),
-                  ),
-                  CustomTextField(
-                    onSaved: (value) {
-                      setState(() {
-                        userName = value;
-                      });
-                    },
-                    controller: userNameController,
-                    hintText: "اسم المستخدم",
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(
-                      "كلمة السر",
-                      style: TextStyle(color: MAIN_COLOR, fontSize: 22),
-                    ),
-                  ),
-                  CustomTextField(
-                    onSaved: (value) {
-                      setState(() {
-                        password = value;
-                      });
-                    },
-                    controller: passwordController,
-                    hintText: "كلمة السر",
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: BlocBuilder<RegisterBloc, RegisterState>(
-                        builder: (context, state) {
-                      return Center(
-                        child: RaisedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              _formKey.currentState.save();
-                              SharedPreferences shared =
-                              await SharedPreferences.getInstance();
-                              registerBloc.add(LoginEvent(
-                                  password: password,
-                                  userName: userName,
-                                  firebaseToken: firebaseToken));
-                              if (state is LoginState) {
-                                if(state.loginDone){
-                                  shiftByReplacement(context, YourStore());
-                                  _formKey.currentState.reset();
+          child: Column(
+            textDirection: TextDirection.rtl,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                color: SECOND_COLOR,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 10, left: 8, right: 8, bottom: 10),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    textDirection: TextDirection.rtl,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Center(
+                        child: Text(
+                          "تسجيل الدخول",
+                          style: TextStyle(fontSize: 25, color: MAIN_COLOR),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          "اسم المستخدم",
+                          style: TextStyle(color: MAIN_COLOR, fontSize: 22),
+                        ),
+                      ),
+                      CustomTextField(
+                        onSaved: (value) {
+                          setState(() {
+                            userName = value;
+                          });
+                        },
+                        controller: userNameController,
+                        hintText: "اسم المستخدم",
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          "كلمة السر",
+                          style: TextStyle(color: MAIN_COLOR, fontSize: 22),
+                        ),
+                      ),
+                      CustomTextField(
+                        onSaved: (value) {
+                          setState(() {
+                            password = value;
+                          });
+                        },
+                        controller: passwordController,
+                        hintText: "كلمة السر",
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: BlocBuilder<RegisterBloc, RegisterState>(
+                            builder: (context, state) {
+                          return Center(
+                            child: RaisedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  _formKey.currentState.save();
+                                  SharedPreferences shared =
+                                      await SharedPreferences.getInstance();
+                                  registerBloc.add(LoginEvent(
+                                      password: password,
+                                      userName: userName,
+                                      firebaseToken: firebaseToken));
+                                  if (state is LoginState) {
+                                    if (state.loginDone) {
+                                      shiftByReplacement(context, YourStore());
+                                      _formKey.currentState.reset();
+                                    }
+                                    await shared.setInt(ID_KEY, state.user.id);
+                                    await shared.setString(
+                                        PHONE_NUMBER_KEY, state.user.phone);
+                                    await shared.setString(
+                                        USER_NAME_KEY, state.user.userName);
+                                    await shared.setString(FIREBASE_TOKEN_KEY,
+                                        state.user.firebaseToken);
+                                    await shared.setString(
+                                        NAME_KEY, state.user.name);
+                                    await shared.setString(
+                                        FIRST_NAME_KEY, state.user.firstName);
+                                    await shared.setString(
+                                        LAST_NAME_KEY, state.user.lastName);
+                                    await shared.setString(
+                                        SHOP_NAME_KEY, state.user.shopName);
+                                    shared.setBool(
+                                        KEEP_USER_LOGGED_IN_KEY, true);
+                                    print(state.loginDone.toString());
+                                  }
+                                  if (state is AuthenticationLoading) {
+                                    print("AuthenticationLoading");
+                                  }
+                                  if (state is ErrorState) {
+                                    print(state.message);
+                                  }
                                 }
-                                await shared.setInt(ID_KEY, state.user.id);
-                                await shared.setString(
-                                    PHONE_NUMBER_KEY, state.user.phone);
-                                await shared.setString(
-                                    USER_NAME_KEY, state.user.userName);
-                                await shared.setString(
-                                    FIREBASE_TOKEN_KEY, state.user.firebaseToken);
-                                await shared.setString(
-                                    NAME_KEY, state.user.name);
-                                await shared.setString(
-                                    FIRST_NAME_KEY, state.user.firstName);
-                                await shared.setString(
-                                    LAST_NAME_KEY, state.user.lastName);
-                                await shared.setString(
-                                    SHOP_NAME_KEY, state.user.shopName);
-                                await shared.setBool(
-                                    KEEP_USER_LOGGED_IN_KEY, true);
-                                print(state.loginDone.toString());
-                              }
-                              if (state is AuthenticationLoading) {
-                                print("AuthenticationLoading");
-                              }
-                              if (state is ErrorState) {
-                                print(state.message);
-                              }
-                            }
-                          },
-                          color: MAIN_COLOR,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          elevation: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 20, top: 5, bottom: 5),
-                            child: Text(
-                              "تسجيل الدخول",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                              },
+                              color: MAIN_COLOR,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              elevation: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 5, bottom: 5),
+                                child: Text(
+                                  "تسجيل الدخول",
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                              ),
                             ),
+                          );
+                        }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                "ليس لديك حساب ؟",
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => SignUpScreen()));
+                                },
+                                child: Text(
+                                  "قم بانشاء حساب",
+                                  style: TextStyle(
+                                      color: MAIN_COLOR,
+                                      fontSize: 16,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
+                      )
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            "ليس لديك حساب ؟",
-                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => SignUpScreen()));
-                            },
-                            child: Text(
-                              "قم بانشاء حساب",
-                              style: TextStyle(
-                                  color: MAIN_COLOR,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.underline),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    ));
+                ),
+              )
+            ],
+          ),
+        ));
   }
 
   @override

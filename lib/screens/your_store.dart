@@ -35,12 +35,12 @@ class _YourStoreState extends State<YourStore> {
     offerPackageSelected = true;
     selectedTapInHeader = HeaderTaps.one;
     allOffersBloc = BlocProvider.of<AllOffersBloc>(context);
-    _function();
+   function();
     allOffersBloc.add(FetchMyAllOffers(shopId: shopId));
     super.initState();
   }
 
-  _function() async {
+  function() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
       shopId = sharedPreferences.getInt(ID_KEY);

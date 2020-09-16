@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mawy_app/constants/colors.dart';
+import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
+import 'package:mawy_app/functions/work_with_api/notification.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -9,7 +12,18 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationOpen = false;
+  int userId ;
   @override
+  void initState() {
+    functionToGetUserId();
+    super.initState();
+  }
+  functionToGetUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      userId = sharedPreferences.getInt(ID_KEY);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       setState(() {
                         _notificationOpen = value;
                       });
+                      turnONNotifications(userId: userId);
                     })
               ],
             ),
