@@ -5,7 +5,11 @@ import 'package:mawy_app/blocs/categories/category_bloc.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/data/repositries/repositries.dart';
 import 'package:mawy_app/preference_healper/src/preference_bloc.dart';
+import 'package:mawy_app/screens/chat.dart';
 import 'package:mawy_app/screens/home.dart';
+import 'package:mawy_app/screens/screens.dart';
+import 'package:mawy_app/screens/test.dart';
+import 'package:mawy_app/screens/test2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/shared_preferences/usage_prefs_list.dart';
 

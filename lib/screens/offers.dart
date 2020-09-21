@@ -18,7 +18,7 @@ class _OffersScreenState extends State<OffersScreen> {
   TextEditingController _searchQuery;
   List<Offer> filteredRecord = [];
   List<Offer> offersList;
-  String dropDownValue ;
+  String dropDownValue;
 
   @override
   void initState() {
@@ -35,16 +35,13 @@ class _OffersScreenState extends State<OffersScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MAIN_COLOR,
         title: dropDownButton(
-          dropdownValue: dropDownValue,
-          function: updateSearchQueryDrop
-        ),
+            dropdownValue: dropDownValue, function: updateSearchQueryDrop),
         centerTitle: true,
       ),
       body: Column(
@@ -70,11 +67,12 @@ class _OffersScreenState extends State<OffersScreen> {
                               child: Center(
                                   child: Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child:
-                                    Text(snapshot.data[index].name.toString()),
+                                child: Text(
+                                  snapshot.data[index].name.toString(),
+                                  style: TextStyle(color: MAIN_COLOR),
+                                ),
                               )),
                               decoration: BoxDecoration(
-                                  color: Colors.lightGreen,
                                   borderRadius: BorderRadius.circular(15)),
                             ),
                           );
@@ -149,7 +147,7 @@ class _OffersScreenState extends State<OffersScreen> {
 
   filterListDrop(Offer offer, String searchQuery) {
     setState(() {
-      if (offer.cityName.toLowerCase() == searchQuery ) {
+      if (offer.cityName.toLowerCase() == searchQuery) {
         filteredRecord.add(offer);
       }
     });

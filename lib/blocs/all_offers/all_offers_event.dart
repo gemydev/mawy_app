@@ -46,7 +46,8 @@ class AddOffer extends AllOffersEvent {
       this.copon,
       this.shopID,
       this.cityId,
-      this.offerName});
+      this.offerName,
+      });
 
   @override
   List<Object> get props => [];

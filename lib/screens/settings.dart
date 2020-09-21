@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
+import 'package:mawy_app/functions/navigation_funs.dart';
 import 'package:mawy_app/functions/work_with_api/notification.dart';
+import 'package:mawy_app/screens/chat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -84,16 +86,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: MAIN_COLOR,
-                          borderRadius: BorderRadius.circular(15)),
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.28,
-                      child: Icon(
-                        Icons.supervised_user_circle,
-                        size: 100,
-                        color: Color(0xff004f00),
+                    GestureDetector(
+                      onTap: (){
+                        normalShift(context, ChatScreen());
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: MAIN_COLOR,
+                            borderRadius: BorderRadius.circular(15)),
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.28,
+                        child: Icon(
+                          Icons.supervised_user_circle,
+                          size: 100,
+                          color: Color(0xff004f00),
+                        ),
                       ),
                     ),
                     Text(

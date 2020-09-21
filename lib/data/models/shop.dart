@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'offers.dart';
 
 class Shops {

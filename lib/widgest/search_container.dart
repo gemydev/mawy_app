@@ -24,7 +24,7 @@ Widget searchBox(
               controller: controller,
               onChanged: updateFunction,
               showCursor: false,
-              autofocus: true,
+              autofocus: false,
               decoration: InputDecoration(
                 hintText: " بحث",
                 hintStyle: TextStyle(fontSize: 20),

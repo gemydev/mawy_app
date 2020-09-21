@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mawy_app/constants/colors.dart';
 import 'package:mawy_app/data/models/shop.dart';
@@ -25,11 +26,13 @@ Widget listOfShops({List<ShopData> shops}){
               height: MediaQuery.of(context).size.height*0.1,
               decoration: BoxDecoration(
                   color: MAIN_COLOR,
-                  borderRadius: BorderRadius.circular(20)
+                  borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
                 children: [
-                  Expanded(child: Container(color: Colors.white,)),
+                  Expanded(child: Container(color: Colors.white,
+                //  child: Image.memory(shops[index].image.readAsBytesSync()),
+                  )),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(shops[index].shopName ?? "", style: TextStyle(

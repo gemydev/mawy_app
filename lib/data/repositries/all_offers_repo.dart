@@ -1,17 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:mawy_app/data/models/offers.dart';
 
 abstract class AllOffersRepository {
   Future<List<Offer>> getAllOffers();
   Future<void> getOfferByOfferId({String offerId});
-  Future<void> makeOffer({String shopId, name, cityId, categoryId, bunchId, copon});
+  Future<void> makeOffer(
+      {String shopId, name, cityId, categoryId, bunchId, copon});
   Future<List<Offer>> getMyOffersByShopId({int shopId});
   Future<List<Offer>> getMyWaitOffers({int shopId});
   Future<List<Offer>> getMyRefusedOffers({int shopId});
   Future<List<Offer>> getAllMyOffers({int shopId});
-  Future<void> updateOffer({String offerId, name, cityId, typeId, File file});
+  Future<void> updateOffer({String offerId, name, cityId, typeId});
   Future<void> getOfferByName(String name);
 }
 
@@ -118,7 +120,7 @@ class AllOfferRepositoryApi implements AllOffersRepository {
       'city_id': cityId,
       'category_id': categoryId,
       'bunch_id': bunchId,
-      'copon': copon
+      'copon': copon,
     });
     if (response.statusCode != 200) {
       makeOfferDone = false;
@@ -129,14 +131,12 @@ class AllOfferRepositoryApi implements AllOffersRepository {
   }
 
   @override
-  Future<void> updateOffer(
-      {String offerId, name, cityId, typeId, File file}) async {
+  Future<void> updateOffer({String offerId, name, cityId, typeId}) async {
     http.Response response = await http.post('$urlServer/update_offer', body: {
       'offer_id': offerId,
       'name': name,
       'city_id': cityId,
       'type_id': typeId,
-      'file': file
     });
     if (response.statusCode != 200) {
       throw Exception("error");

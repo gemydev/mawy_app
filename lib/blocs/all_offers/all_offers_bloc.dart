@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:mawy_app/data/models/categories.dart';
 import 'package:mawy_app/data/models/offers.dart';
 import 'package:mawy_app/data/repositries/repositries.dart';
@@ -32,7 +35,7 @@ class AllOffersBloc extends Bloc<AllOffersEvent, AllOffersState> {
         await repository.makeOffer(
           shopId: event.shopID,
           name: event.offerName,
-          categoryId: event.selectedCategories
+          categoryId: event.selectedCategories,
         );
         yield OfferAdded();
       } catch (e) {

@@ -1,13 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:mawy_app/blocs/all_offers/all_offers_bloc.dart';
 import 'package:mawy_app/constants/constants.dart';
 import 'package:mawy_app/data/models/categories.dart';
 import 'package:mawy_app/data/shared_preferences/prefs_keys.dart';
 import 'package:mawy_app/functions/navigation_funs.dart';
+import 'package:mawy_app/functions/pdf_functions.dart';
 import 'package:mawy_app/functions/work_with_api/categories.dart';
+import 'package:mawy_app/functions/work_with_api/dio_function.dart';
 import 'package:mawy_app/screens/login.dart';
+import 'package:mawy_app/screens/test2.dart';
 import 'package:mawy_app/widgest/custom_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,6 +40,8 @@ class _AddYourOfferState extends State<AddYourOffer> {
   Color color;
   List<FullCategory> selectedCategories = [];
   bool selected = false;
+  PlatformFile file;
+
   @override
   void initState() {
     offersBloc = BlocProvider.of<AllOffersBloc>(context);
@@ -65,11 +75,16 @@ class _AddYourOfferState extends State<AddYourOffer> {
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              Center(
-                child: Icon(
-                  Icons.library_books,
-                  color: MAIN_COLOR,
-                  size: 100,
+              GestureDetector(
+                onTap: () {
+                  onTapToChooseFile().then((value) => file = value);
+                },
+                child: Center(
+                  child: Icon(
+                    Icons.library_books,
+                    color: MAIN_COLOR,
+                    size: 100,
+                  ),
                 ),
               ),
               Center(
@@ -121,7 +136,10 @@ class _AddYourOfferState extends State<AddYourOffer> {
                             child: Directionality(
                               textDirection: TextDirection.rtl,
                               child: DropdownButtonFormField(
-                                hint: Text("اختر مدينتك" ,textDirection: TextDirection.rtl,),
+                                hint: Text(
+                                  "اختر مدينتك",
+                                  textDirection: TextDirection.rtl,
+                                ),
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       gapPadding: 0,
@@ -137,9 +155,9 @@ class _AddYourOfferState extends State<AddYourOffer> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     _selectedCity = newValue;
-                                    if(_selectedCity == 'ffff'){
-                                      _cityId = '1' ;
-                                    }else if (_selectedCity == 'mmm'){
+                                    if (_selectedCity == 'ffff') {
+                                      _cityId = '1';
+                                    } else if (_selectedCity == 'mmm') {
                                       _cityId = '2';
                                     }
                                   });
@@ -261,17 +279,19 @@ class _AddYourOfferState extends State<AddYourOffer> {
               Center(
                 child: RaisedButton(
                   onPressed: () async {
-                    if(_globalKey.currentState.validate()){
+                    if (_globalKey.currentState.validate()) {
                       _globalKey.currentState.save();
                       SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
+                          await SharedPreferences.getInstance();
                       offersBloc.add(AddOffer(
                           selectedCategories: selectedCategories,
                           shopID: prefs.getInt(ID_KEY).toString(),
                           copon: widget.copon,
                           cityId: _cityId,
-                          offerName: offerName
+                          offerName: offerName,
                       ));
+                      uploadFileByDio(file);
+                     // sendRequest(file.path);
                       normalShift(context, Login());
                     }
                   },
